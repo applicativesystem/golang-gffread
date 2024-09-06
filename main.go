@@ -42,10 +42,12 @@ type trancript struct {
 		log.Fatal(err.Error())
 	  fmt.Println("Arguments list cant be empty")
 	}
+    // thinking of implementing the cobra cli here with the flag parse, will implement it.
 
 	genomeRead := os.Args[1:]
 	annotationRead := os.Args[2:]
 	annotationReadGTF := os.Args[3:]
+	plotSave := os.Args[4:]
 
  fOpen, err := os.Open(genomeRead)
  if err != nil {
@@ -327,10 +329,12 @@ type trancript struct {
 	}
 
 	// only graphs and plot left and gff comparison and merging of several gffs.
+	// two types of plots: 1. Linear plots 2. Statiscal plot 3. variance estimation plots. 
+ 
 
 	type genomeDetail interface {}
 
-		func (* exonexonStruct{}) exonDraw () {
+		func (* exonStruct{}) exonDraw () {
 			return "interface for drawing the exons"
 	}
 }
