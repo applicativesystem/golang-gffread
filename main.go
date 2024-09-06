@@ -56,7 +56,7 @@ type trancript struct {
 	for fRead.Scan() {
 		line := fRead.Text()
 		if string(strings.Split(line, "\t")[2]) == "exon" {
-		  exonOpen := []exonStruct{}
+			exonOpen := []exonStruct{}
 			exonOpen = append(exonOpen, exonStruct{
 			name: strings.Split(line, "\t")[0],
 			exonAligned: strings.Split(line, "\t")[2],
@@ -65,7 +65,7 @@ type trancript struct {
 		}
 		if string(strings.Split(line, "\t")[2]) == "transcript" {
 				transcriptOpen = []transcript{}
-			  transcriptOpen = append(transcriptOpen, transcript{
+        transcriptOpen = append(transcriptOpen,transcript{
 				name : strings.Split(line, "\t")[0],
 				transcriptAligned : strings.Split(line, "\t")[2],
 				start : strings.Split(line, "\t")[3],
@@ -74,12 +74,60 @@ type trancript struct {
 			}
 	}
 
+	type transcriptExonAlign struct {
+		name string
+		exonAligned string
+		start string
+		end string
+
+	}
+
+	type transcriptAlign struct {
+		name string
+		transcriptAligned string
+		start string
+		end string
+	}
+
+
+	for fRead.Scan() {
+		line := fRead.Text()
+		if string(strings.Split(line, "\t")[2]) == "exon" {
+			transcriptExon := []transcriptExonAlign{}
+			transcriptExon = append(transcriptExon, exonStruct{
+			name: strings.Split(line, "\t")[0],
+			exonAligned: strings.Split(line, "\t")[2],
+			start : strings.Split(line, "\t")[3],
+			end : strings.Split(line, "\t")[4]
+		}
+		if string(strings.Split(line, "\t")[2]) == "transcript" {
+				transcriptAlignOpen = []transcriptALign{}
+        transcriptAlignOpen = append(transcriptAlignOpen,transcript{
+				name : strings.Split(line, "\t")[0],
+				transcriptAligned : strings.Split(line,"\t")[2],
+				start : strings.Split(line, "\t")[3],
+				end : strings.Split(line, "\t")[4]
+			})
+			}
+	}
+
+	exonAlignEst := []int32{}
+	transcriptAlignEst := []int32{}
+
+	for i := range transcriptExon {
+	     exonAlignEst = append(exonAlignEst, int(transcriptExon.end)-int(transcriptExon.start) )
+	}
+	for i := range transcriptALignOpen {
+		transcriptAlignEst = append(transcriptAlignEst, int(transcriptAlign.end) - int(transcriptAlignEst.start))
+	}
+
+
   type annotateGeneStruct struct {
      name string
 		 refseq string
 		 orgType string
 		 start string
-     end string
+                 end string
 		 strand string
 		 alignedID string
 		}
@@ -97,7 +145,7 @@ type trancript struct {
 		 name string
 		 refseq string
 		 start string
-     end string
+                 end string
 		strand string
 		alignedID string
 
@@ -141,7 +189,6 @@ type trancript struct {
 					strand : strings.Split(line, "\t")[6],
 					alignedID : strings.Split(strings.Split(line, "\t")[8], ";")[0]
 				})
-
 			}
 		if strings.Split(line, "\t")[2] == "CDS" {
 				annotatedCDS := []annotateCDSStruct{}
@@ -153,6 +200,7 @@ type trancript struct {
           strand : strings.Split(line, "\t")[6],
 					alignedID : strings.Split(strings.Split(line, "\t")[8], ";")[0]
 				})
+			}
 		if strings.Split(line, "\t")[2] == "transcript" {
 					annotatetranscript := []annotatetranscriptStruct{}
 					annotatetranscript = append(annotatetranscript, annotatetranscriptStruct{
@@ -163,25 +211,126 @@ type trancript struct {
 						strand : strings.Split(line, "\t")[6],
 						alignedID := strings.Split(strings.Split(line, "\t")[8], ";")[0]
 				})
-
 				}
-
 			}
-
-
-
-
 		}
+
+   // extra analysis for gff comparison and length estimates across the gff
+
+	type geneAlign struct {
+		name string
+		refseq string
+		start string
+		end string
+		strand string
+		alignedID string
+
 	}
 
+	type cdsAlign struct {
+		name string
+		refseq string
+		start string
+		end string
+		strand string
+		alignedID string
+
+	}
+
+	type exonAlign struct {
+		name string
+		refseq string
+		start string
+		end string
+		strand string
+		alignedID string
+
+	}
+
+	type transcriptAlign struct {
+		name string
+		refseq string
+		start string
+		end string
+		strand string
+		alignedID string
+
+	}
+
+	// reason why i am declaring it again here is because this will help me in passing this as a complete interface to another package.
+	// if you want to remove it then simply make the struct first word capital so that it can be listened as global.
+  fOpen := bufio.Newscanner(f)
+	for fOpen.Scan() {
+		line := fOpen.text()
+		if strings.Split(line, "\t")[2] == "gene" {
+			geneAlignT := []geneAlign{}
+			geneAlignT = append(geneAlign, geneAlign{
+				name : strings.Split(line, "\t")[0],
+				refseq : strings.Split(line, "\t")[2],
+			  start : strings.Split(line, "\t")[3],
+				end : string.Split(line,"\t")[4],
+				strand : strings.Split(line, "\t")[6],
+				alignedID : strings.Split(strings.Split(line,"\t")[8], ";")[0]
+			})
+
+		if strings.Split(line, "\t")[2] == "exon" {
+				exonAlignT := []exonAlign{}
+				exonAlignT = append(exonAlignT,exonAlign{
+					name : strings.Split(line, "\t")[0],
+					refseq : strings.Split(line, "\t")[2],
+					start : string.Split(line, "\t")[3],
+					end : strings.Split(line, "\t")[4],
+					strand : strings.Split(line, "\t")[6],
+					alignedID : strings.Split(strings.Split(line, "\t")[8], ";")[0]
+				})
+			}
+		if strings.Split(line, "\t")[2] == "CDS" {
+				cdsAlignT := []cdsAlign{}
+				cdsAlignT = append(cdsAlignT, cdsAlign{
+					name : strings.Split(line, "\t")[0],
+					refseq : strings.Split(line, "\t")[2],
+					start : strings.Split(line, "\t")[3],
+					end : strings.Split(line, "\t")[4],
+          strand : strings.Split(line, "\t")[6],
+					alignedID : strings.Split(strings.Split(line, "\t")[8], ";")[0]
+				})
+			}
+		if strings.Split(line, "\t")[2] == "transcript" {
+					transcriptAlignT := []transcriptAlign{}
+					transcriptAlignT = append(transcriptAlignT, transcriptAlign{
+						name : strings.Split(line, "\t")[0],
+						refseq : strings.Split(line,"\t")[2],
+						start : strings,Split(line,"\t")[3],
+						end : strings.Split(line,"\t")[4],
+						strand : strings.Split(line,"\t")[6],
+						alignedID := strings.Split(strings.Split(line, "\t")[8], ";")[0]
+				})
+				}
+			}
+		}
+	exonAlignLength := []int32{}
+	transcriptAlignLength := []int32{}
+	cdsAlignLength := []int32{}
+	geneAlignLength := []int32{}
+
+	for i:= range geneAlignT {
+		geneAlignedLength = append(geneAlignedLength, int(geneAlign.end)-int(geneAlign.start))
+	}
+	for i := range cdsAlign {
+		cdsAlignLength = append(cdsAlignLength, int(cdsAlign.end) - int(cdsAlign.start))
+	}
+	for i := range exonAlign {
+		exonAlignLength = append(exonAlignLength, int(exonAlign.end) - int(exonAlign.start))
+	}
+	for i := range transcriptAlign {
+		transcriptAlignLength = append(transcriptAlignLength, int(transcriptAlign.end) - int(transcriptAlign.start))
+	}
+
+	// only graphs and plot left and gff comparison and merging of several gffs.
 
 	type genomeDetail interface {}
 
 		func (* exonexonStruct{}) exonDraw () {
 			return "interface for drawing the exons"
 	}
-
-
-
-
-	}
+}
