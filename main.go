@@ -93,7 +93,7 @@ type trancript struct {
 		alignedID string
 	}
 
-	type annotationCDS struct {
+	type annotationCDSStruct struct {
 		 name string
 		 refseq string
 		 start string
@@ -103,7 +103,7 @@ type trancript struct {
 
 	}
 
-	type annotateCDS struct {
+	type annotatetranscriptStruct struct {
 		name string
 		refseq string
 		start string
@@ -116,7 +116,8 @@ type trancript struct {
 
 	func (* exonexonStruct{}) exonDraw () {
 	 return "interface for drawing the exons"
- }
+  }
+
 
 
 
@@ -128,8 +129,8 @@ type trancript struct {
 	fOpen := bufio.Newscanner(f)
   for fOpen.Scan() {
 		line := fOpen.text()
-		annotateGene := []annotateGeneStruct{}
 		if strings.Split(line, "\t")[2] == "gene" {
+			annotateGene := []annotateGeneStruct{}
 			annotateGene = append(annotateGene, annotateGeneStruct{
 				name : strings.Split(line, "\t")[0],
 				refseq : strings.Split(line, "\t")[2],
@@ -145,14 +146,35 @@ type trancript struct {
 					name : strings.Split(line, "\t")[0],
 					refseq : strings.Split(line, "\t")[2],
 					start : string.Split(line, "\t")[3],
-					end : strings.Split(line, "\t")[4]
+					end : strings.Split(line, "\t")[4],
 					strand : strings.Split(line, "\t")[6],
-					aligned : strings.Split(strings.Split(line, "\t")[8], ";")[0]
+					alignedID : strings.Split(strings.Split(line, "\t")[8], ";")[0]
 				})
 
 			}
 		if strings.Split(line, "\t")[2] == "CDS" {
-				annotatedCDS = []annotateCDS
+				annotatedCDS := []annotateCDSStruct{}
+				annotateCDS = append(annotateCDS, annotateCDSStruct{
+					name : strings.Split(line, "\t")[0],
+					refseq : strings.Split(line, "\t")[2],
+					start : strings.Split(line, "\t")[3],
+					end : strings.Split(line, "\t")[4],
+          strand : strings.Split(line, "\t")[6],
+					alignedID : strings.Split(strings.Split(line, "\t")[8], ";")[0]
+				})
+		if strings.Split(line, "\t")[2] == "transcript" {
+					annotatetranscript := []annotatetranscriptStruct{}
+					annotatetranscript = append(annotatetranscript, annotatetranscriptStruct{
+						name : strings.Split(line, "\t")[0],
+						refseq : strings.Split(line, "\t")[2],
+						start : strings,Split(line, "\t")[3],
+						end : strings.Split(line, "\t")[4],
+						strand : strings.Split(line, "\t")[6],
+						alignedID := strings.Split(strings.Split(line, "\t")[8], ";")[0]
+				})
+
+				}
+
 			}
 
 
