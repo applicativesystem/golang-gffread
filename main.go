@@ -53,7 +53,7 @@ type trancript struct {
 	}
 
 	fRead := bufio.NewScanner(fOpen)
-  for fRead.Scan() {
+	for fRead.Scan() {
 		line := fRead.Text()
 		if string(strings.Split(line, "\t")[2]) == "exon" {
 		  exonOpen := []exonStruct{}
@@ -61,7 +61,7 @@ type trancript struct {
 			name: strings.Split(line, "\t")[0],
 			exonAligned: strings.Split(line, "\t")[2],
 			start : strings.Split(line, "\t")[3],
-			end : strings.Split(line, "\t")[4]}
+			end : strings.Split(line, "\t")[4]
 		}
 		if string(strings.Split(line, "\t")[2]) == "transcript" {
 				transcriptOpen = []transcript{}
@@ -112,22 +112,13 @@ type trancript struct {
 		alignedID string
 	}
 
-  type genomeDetail interface {}
-
-	func (* exonexonStruct{}) exonDraw () {
-	 return "interface for drawing the exons"
-  }
-
-
-
-
 	f, err := os.Open(annotationRannotationReadGTF)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
 	fOpen := bufio.Newscanner(f)
-  for fOpen.Scan() {
+	for fOpen.Scan() {
 		line := fOpen.text()
 		if strings.Split(line, "\t")[2] == "gene" {
 			annotateGene := []annotateGeneStruct{}
@@ -182,6 +173,15 @@ type trancript struct {
 
 		}
 	}
+
+
+	type genomeDetail interface {}
+
+		func (* exonexonStruct{}) exonDraw () {
+			return "interface for drawing the exons"
+	}
+
+
 
 
 	}
