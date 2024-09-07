@@ -7,6 +7,8 @@ import (
 	"log"
 	"os"
 	"strings"
+	"github.com/go-echarts/v2/charts"
+	"github.com/go-echarts/go-echarts/v2/opts"
 )
 
 /*
@@ -64,7 +66,7 @@ type trancript struct {
 			exonAligned: strings.Split(line, "\t")[2],
 			start : strings.Split(line, "\t")[3],
 			end : strings.Split(line, "\t")[4]
-		}
+		})
 		if string(strings.Split(line, "\t")[2]) == "transcript" {
 				transcriptOpen = []transcript{}
         transcriptOpen = append(transcriptOpen,transcript{
@@ -328,9 +330,22 @@ type trancript struct {
 		transcriptAlignLength = append(transcriptAlignLength, int(transcriptAlign.end) - int(transcriptAlign.start))
 	}
 
+   // implementing the charts 2024--9-7
+
+		bar := charts.NewBar()
+		bar.SetGlobalOptions(charts.WithTitleOpts(opts.Title{
+			Title : "Exon plot for the distribution",
+			SubTitle: "Plotting the exon distribution"
+		}))
+		bar.SetAxis(exonAlignT.refseq).AddSeries(exonAligLength)
+		f , _ := os.Create("exonplot.html")
+		bar.Render(f)
+
+
+
 	// only graphs and plot left and gff comparison and merging of several gffs.
-	// two types of plots: 1. Linear plots 2. Statiscal plot 3. variance estimation plots. 
- 
+	// two types of plots: 1. Linear plots 2. Statiscal plot 3. variance estimation plots.
+
 
 	type genomeDetail interface {}
 
