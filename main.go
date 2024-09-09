@@ -436,9 +436,9 @@ type trancript struct {
 		}
 
 			mergedNameGene := []string{}
-			mergedstartGene := []string{}
-			mergedendGene := []string{}
-			megedstrandGene := []string{}
+			mergedStartGene := []string{}
+			mergedEndGene := []string{}
+			megedStrandGene := []string{}
 			mergedAlignedGene := []string{}
 
 			for i: range genAlign {
@@ -453,13 +453,138 @@ type trancript struct {
 				}
 
 			}
+			mergedNameCDS := []string{}
+			mergedStartCDS := []string{}
+			mergedEndCDS := []string{}
+			mergedStrandCDS := []string{}
+			mergedAlignedCDS := []string{}
 
-		}
+			for i := range CDSAlign {
+				for j := range annoMergeCDS {
+					if annoMergeCDS.name == CDSAlign.name {
+						mergedNameCDS = append(mergedNameCDS, annoMergeCDS.name)
+						mergedStartCDS = append(mergedStartCDS, annoMergeCDS.start)
+						mergedEndCDS = append(mergedEndCDS, annoMergeCDS.end)
+						mergedStrandCDS = append(mergedStrandCDS, annoMergeCDS.strand)
+						mergedAlignedCDS = append(mergedAlignedCDS, annoMergeCDS.annoMergCD)
+					}
+				}
+			}
+
+       mergedNameTranscript := []string{}
+			 mergedStartTranscript := []string{}
+			 mergedEndTranscript := []string{}
+			 mergedStrandTranscript := []string{}
+			 mergedAlignedTranscript := []string{}
+
+			 for i := range TranscriptAlign {
+					for j := range annoMergeTranscript {
+						if annoMergeTranscript.name == TranscriptAlign.name {
+							mergedNamename = append(mergedNameTranscript, annoMergeTranscript.name)
+							mergedStartTranscript = append(mergedStartTranscript, annoMergeTranscript.start)
+						  mergedEndTranscript = append(mergedEndTranscript, annoMergeTranscript.end)
+							mergedStrandTranscript = append(mergedStrandTranscript, annoMergeTranscript.strand)
+							mergedAlignedTranscript = append(mergedAlignedtranscript, annoMergeTranscript.annoMergeTran)
+						}
+					}
+				}
+
+			mergedNameExon := []string{}
+			mergedStartExon := []string{}
+			mergedEndExon := []string{}
+			mergedStrandExon := []string{}
+			mergedAlignedExon := []string{}
+
+     for i := range ExonAlign {
+				for j := range annoMergeExon {
+					if annoMergeExon.name == ExonAlign.name {
+						mergedNameExon = append(mergedNameExon, annoMergeExon.name)
+						mergedStartExon = append(mergedNameExon, annoMergeExon.start)
+						mergedEndExon = append(mergedNameExon, annoMergeExon.end)
+						mergedStrandExon = append(mergedNameExon, annoMergeExon.strand)
+						mergedAlignedExon = append(mergedNameExon, annoMergExon.annoMergeE)
+					}
+				}
+			}
+}
+
+		// binning of the junctions for the plots.
+
+		 exonBin100 := []int32{}
+		 exonBin500 := []int32{}
+		 exonBin1000 := []int32{}
+		 exonBin1500 := []int32{}
+		 exonBin2000 := []int32{}
+		 exonBin2500 := []int32{}
+		 exonBin3000 := []int32{}
+		 exonBin3500 := []int32{}
+		 exonBin4000 := []int32{}
+
+		transcriptBin100 := []int32{}
+		transcriptBin500 := []int32{}
+    transcriptBin1000 := []int32{}
+		transcriptBin1500 := []int32{}
+		trancriptBin2000 := []int32{}
+		transcriptBin2500 := []int32{}
+		transcriptBin3000 := []int32{}
+		transcriptBin3500 := []int32{}
+		trancriptBin40000 := []int32{}
+
+		cdsBin100 := []int32{}
+		cdsBin500 := []int32{}
+		cdsBin1000 := []int32{}
+		cdsBin1500 := []int32{}
+		cdsBin2000 := []int32{}
+		cdsBin2500 := []int32{}
+		cdsBin3000 := []int32{}
+		cdsBin3500 := []int32{}
+		cdsBin4000 := []int32{}
+
+		geneBin100 := []int32{}
+		geneBin500 := []int32{}
+		geneBin1000 := []int32{}
+		geneBin1500 := []int32{}
+		geneBin2000 := []int32{}
+		geneBin2500 := []int32{}
+		geneBin3000 := []int32{}
+		geneBin3500 := []int32{}
+		geneBin4000 := []int32{}
+
+		for i := range exonAlignlength {
+			if exonAlignnLenth[i] <=100 {
+				exonBin100 = append(exonBin100, exonAligLength[i])
+			}
+			elseif exonAlignLength[i] >= 100 && exonAlignLength <=500 {
+				exonBin500 = append(exonBin500, exonAligLength[i])
+			}
+			elseif exonAligLength[i] >= 500 && exonAlignLength[i] <=1000 {
+				exonBin1000 = append(exonBin1000, exonAlignLength[i])
+			}
+			elseif exonAlignlength[i] >= 1000 && exonAlignLength[i] <= 1500 {
+				exonBin1500 = append(exonBin1500, exonAlignLength[i])
+			}
+			elseif exonAlignLength[i] >= 1500 && exonAlignLength[i] <= 2000 {
+				exonBin2000 = append(exonBin2000, exonAlignLength[i])
+			}
+			elseif exonAlignLength[i] >= 2000 && exonAlignLength[i] <=2500 {
+         exonBin2500 = append(exonBin2500, exonAlignlength[i])
+			}
+			elseif exonAlignlength[i] >= 2500 && exonAlignLength[i] <= 3000 {
+				exonBin3000 = append(exonBin3000, exonAlignlength[i])
+			}
+			elseif exonAlignlength[i] >= 3000 && exonAlignlength[i] <= 3500 {
+				exonBin35000 = append(exonBin3500, exonAlignLength[i])
+			}
+			elseif exonAlignLength[i] >= 3500 && exonAlignLength[i] <= 4000 {
+				exonBin4000 = append(exonBin4000, exonAlignLength[i])
+			}
+			elseif {
+				continue
+			}
+ 		}
 
 
-	type genomeDetail interface {}
 
-		func (* exonStruct{}) exonDraw () {
-			return "interface for drawing the exons"
-	}
+}
+
 }
