@@ -49,6 +49,7 @@ type trancript struct {
 	genomeRead := os.Args[1:]
 	annotationRead := os.Args[2:]
 	annotationReadGTF := os.Args[3:]
+	annotationmerge := os.Args[4:]
 	plotSave := os.Args[4:]
 
  fOpen, err := os.Open(genomeRead)
@@ -330,7 +331,7 @@ type trancript struct {
 		transcriptAlignLength = append(transcriptAlignLength, int(transcriptAlign.end) - int(transcriptAlign.start))
 	}
 
-   // implementing the charts 2024--9-7
+  // implementing the charts 2024--9-7
 
 		bar := charts.NewBar()
 		bar.SetGlobalOptions(charts.WithTitleOpts(opts.Title{
@@ -342,9 +343,118 @@ type trancript struct {
 		bar.Render(f)
 
 
+ // merging of several gff aligned across multiple parent genomes
 
-	// only graphs and plot left and gff comparison and merging of several gffs.
-	// two types of plots: 1. Linear plots 2. Statiscal plot 3. variance estimation plots.
+    type annoMergeExon struct {
+			name string
+			refseq string
+			start string
+			end string
+			strand string
+			annomergeE string
+		}
+
+		type annoMergeTranscript struct {
+			name string
+			refseq string
+			start string
+			end string
+			strand string
+			annoMergeTran string
+		}
+		type annoMergeGene struct {
+      name string
+			refseq string
+			start string
+			end string
+			strand string
+			annoMergeGe string
+		}
+		type annoMergeCDS struct {
+			name string
+			refseq string
+			start string
+			end string
+			strand string
+			annoMergeCD string
+		}
+
+		fopen, err := Os.Open(annotationmerge)
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+		fread, err := bufio.NewScanner(fopen)
+		for fread.Scan() {
+			line := fread.Text()
+			if strings.HasPrefix(string(line), "@") {
+				continue
+			} else {
+				 if strings.Split(line, "\t")[2] == "exon"{
+				annoMergeE := []annoMergeExon{}
+				annoMergeG = append(annoMergeT, annoMergeExon{
+					name : strings.Split(string(line), "\t")[0],
+					refseq : strings.Split(string(line), "\t")[2],
+					start : strings.Split(string(line), "\t")[3],
+					end : strings.Split(string(line), "\t")[4],
+					strand : strings.Split(string(line), "\t")[6],
+					annoMergeE : strings.Split(strings.Split(string(line), "\t")[8], ";")[0]
+			  })
+			 }
+			  if strings.Split(line, "\t")[2] == "gene" {
+				annoMergeG := []annoMergeGene{}
+				annoMergeG = append(annoMergeG, annoMergeGene{
+					name : strings.Split(string(line), "\t")[0],
+					refseq : strings.Split(string(line), "\t")[2],
+					start : strings.Split(string(line), "\t")[3],
+					end : strings.Split(string(line), "\t")[4],
+					strand : strings.Split(string(line), "\t")[6],
+					annoMergeGe : strings.Split(strings.Split(string(line), "\t")[8], ";")[0]
+				})
+			  }
+				if strings.Split(line, "\t")[2] == "transcript" {
+			  annoMergeT := []annoMergeTranscript{}
+				annoMergeT = append(annoMergeT, annoMergeTranscript{
+					name : strings.Split(string(line), "\t")[0],
+				  refseq : strings.Split(string(line), "\t")[2],
+				  start : strings.Split(string(line), "\t")[3],
+				  end : strings.Split(string(line), "\t")[4],
+				  strand : = strings.Split(string(line), "\t")[6],
+				  annoMergeTran : strings.Split(strings.Split(string(line), "\t")[8], ";")[0]
+				})
+			  }
+				  if strings.Split(line, "\t")[2] == "CDS" {
+				 annoMergeC := annoMergeCDS{}
+				annoMergeC = append(annoMergeC, annoMergeCDS{
+					name : strings.Split(string(line), "\t")[0],
+					refseq : strings.Split(string(line), "\t")[2],
+					start: strings.Split(string(line), "\t")[3],
+					end : strings.Split(string(line), "\t")[4],
+					strand : strings.Split(string(line), "\t")[6],
+					annoMergCD : strings.Split(strings.Split(string(line), "\t")[8], ";")[0]
+				})
+			}
+		}
+
+			mergedNameGene := []string{}
+			mergedstartGene := []string{}
+			mergedendGene := []string{}
+			megedstrandGene := []string{}
+			mergedAlignedGene := []string{}
+
+			for i: range genAlign {
+				for j := range annoMergeGene {
+					if annoMergeGene.name == geneAlign.name {
+						mergedNameGene = append(mergedNameGene, annoMergeGene.name)
+						mergedstartGene = append(mergedstartGene, annoMergeGene.start)
+						mergedendGene = append(mergedendGene, annoMergGene.end)
+						mergedstrandGene = append(mergedstrandGene, annoMergeGene.strand)
+						mergedAlignedGene = append(mergedAlignedGene, annoMergeGene.annoMergeGe)
+					}
+				}
+
+			}
+
+		}
 
 
 	type genomeDetail interface {}
