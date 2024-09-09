@@ -39,21 +39,58 @@ type trancript struct {
 		end string
 	}
 
+	// cobra cli will be implemented with flag parse
+
 	args := os.Args
 	if len(args) != 2 {
 		log.Fatal(err.Error())
 	  fmt.Println("Arguments list cant be empty")
 	}
-    // thinking of implementing the cobra cli here with the flag parse, will implement it.
 
 	genomeRead := os.Args[1:]
 	annotationRead := os.Args[2:]
 	annotationReadGTF := os.Args[3:]
 	annotationmerge := os.Args[4:]
-	plotSave := os.Args[4:]
 
- fOpen, err := os.Open(genomeRead)
- if err != nil {
+
+  // making genome id and seq struct and expecting that your genome is linearized.
+	// making a separate struct for the id and the seq so that it can be used separately.
+
+	type genomeIDStruct struct {
+
+		id string
+	}
+
+	type genomeSeqStruct struct {
+		seq string
+	}
+
+	genomeOpen, err := os.Open(genomeRead)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	genomeScan := bufio.NewScanner(genomeOpen)
+	for genomeScan.Scan() {
+		line := genomeScan.Text()
+		genomeID := []genomeIDStruct{}
+		if strings.HasPrefix(string(line), ">") {
+			genomeID = append(genomeID, genomeIDStruct{
+				id : string(line),
+			})
+		genomeSeq := []genomeSeqStruct{}
+			if !strings.HasPrefix(string(line), ">") {
+				genomeSeq = append(genomeSeq, genomeSeqStruct{
+					seq : string(line),
+				})
+			}
+		}
+	}
+
+  // reading the annotation gff
+
+	fOpen, err := os.Open(annotationRead)
+  if err != nil {
 		log.Fatal(err.Error())
 	}
 
@@ -66,7 +103,7 @@ type trancript struct {
 			name: strings.Split(line, "\t")[0],
 			exonAligned: strings.Split(line, "\t")[2],
 			start : strings.Split(line, "\t")[3],
-			end : strings.Split(line, "\t")[4]
+			end : strings.Split(line, "\t")[4],
 		})
 		}
 		if string(strings.Split(line, "\t")[2]) == "transcript" {
@@ -75,7 +112,7 @@ type trancript struct {
 				name : strings.Split(line, "\t")[0],
 				transcriptAligned : strings.Split(line, "\t")[2],
 				start : strings.Split(line, "\t")[3],
-				end : strings.Split(line, "\t")[4]
+				end : strings.Split(line, "\t")[4],
 			})
 			}
 	}
@@ -133,7 +170,7 @@ type trancript struct {
 		 refseq string
 		 orgType string
 		 start string
-                 end string
+     end string
 		 strand string
 		 alignedID string
 		}
@@ -151,9 +188,9 @@ type trancript struct {
 		 name string
 		 refseq string
 		 start string
-                 end string
-		strand string
-		alignedID string
+     end string
+		 strand string
+		 alignedID string
 
 	}
 
@@ -170,6 +207,9 @@ type trancript struct {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+
+
+	// reading the annotation GTF
 
 	fOpen := bufio.Newscanner(f)
 	for fOpen.Scan() {
@@ -263,9 +303,9 @@ type trancript struct {
 
 	}
 
-	// reason why i am declaring it again here is because this will help me in passing this as a complete interface to another package.
-	// if you want to remove it then simply make the struct first word capital so that it can be listened as global.
-  fOpen := bufio.Newscanner(f)
+	// declaring it again here is because this will help me in passing this as a complete interface to another package.
+
+	fOpen := bufio.Newscanner(f)
 	for fOpen.Scan() {
 		line := fOpen.text()
 		if strings.Split(line, "\t")[2] == "gene" {
@@ -332,20 +372,48 @@ type trancript struct {
 		transcriptAlignLength = append(transcriptAlignLength, int(transcriptAlign.end) - int(transcriptAlign.start))
 	}
 
-  // implementing the charts 2024--9-7
+  // implementing the charts and they will open as webpages
 
 		bar := charts.NewBar()
 		bar.SetGlobalOptions(charts.WithTitleOpts(opts.Title{
 			Title : "Exon plot for the distribution",
 			SubTitle: "Plotting the exon distribution"
 		}))
-		bar.SetAxis(exonAlignT.refseq).AddSeries(exonAligLength)
+		bar.SetAxis(exonAlignT.refseq).AddSeries(exonAlignLength)
 		f , _ := os.Create("exonplot.html")
+		bar.Render(f)
+
+		bar := charts.NewBar()
+		bar.SetGlobalOptions(charts.WithTitleOpts(opts.Title{
+			Title : "Gene plot for the distribution",
+			SubTitle: "Plotting the gene distribution"
+		}))
+		bar.SetAxis(exonAlignT.refseq).AddSeries(geneAlignedLength)
+		f , _ := os.Create("geneplot.html")
+		bar.Render(f)
+
+		bar := charts.NewBar()
+		bar.SetGlobalOptions(charts.WithTitleOpts(opts.Title{
+			Title : "Transcript plot for the distribution",
+			SubTitle: "Plotting the transcript distribution"
+		}))
+		bar.SetAxis(exonAlignT.refseq).AddSeries(transcriptAlignLength)
+		f , _ := os.Create("transcriptplot.html")
+		bar.Render(f)
+
+		bar := charts.NewBar()
+		bar.SetGlobalOptions(charts.WithTitleOpts(opts.Title{
+			Title : "CDS plot for the distribution",
+			SubTitle: "Plotting the cds distribution"
+		}))
+		bar.SetAxis(exonAlignT.refseq).AddSeries(cdsAlignLength)
+		f , _ := os.Create("cdsplot.html")
 		bar.Render(f)
 
 
  // merging of several gff aligned across multiple parent genomes
-    type annoMergeExon struct {
+
+	  type annoMergeExon struct {
 			name string
 			refseq string
 			start string
@@ -508,7 +576,7 @@ type trancript struct {
 			}
 }
 
-// binning of the junctions for the plots.
+   // binning of the junctions for the plots.
 
 		 exonBin100 := []int32{}
 		 exonBin500 := []int32{}
@@ -681,8 +749,206 @@ type trancript struct {
 				continue
 			}
 		}
- // extract fasta and annotations
 
+
+   // extract fasta regions from the gtf and the gff
+
+   type genomeIDStruct struct {
+
+	   id string
+   }
+
+   type genomeSeqStruct struct {
+	   seq string
+   }
+
+   genomeOpen, err := os.Open(genomeRead)
+   if err != nil {
+	   log.Fatal(err.Error())
+   }
+
+   genomeScan := bufio.NewScanner(genomeOpen)
+   for genomeScan.Scan() {
+	   line := genomeScan.Text()
+	   genomeID := []genomeIDStruct{}
+	   if strings.HasPrefix(string(line), ">") {
+		   genomeID = append(genomeID, genomeIDStruct{
+			   id : string(line)
+		   })
+		   genomeSeq := []genomeSeqStruct{}
+		   if !strings.HasPrefix(string(line), ">") {
+			   genomeSeq = append(genomeSeq, genomeSeqStruct{
+				   seq : string(line)
+			   })
+		   }
+	   }
+   }
+
+
+   type geneAlign struct {
+	   name string
+	   refseq string
+	   start string
+	   end string
+	   strand string
+	   alignedID string
+
+   }
+
+   type cdsAlign struct {
+	   name string
+	   refseq string
+	   start string
+	   end string
+	   strand string
+	   alignedID string
+
+   }
+
+   type exonAlign struct {
+	   name string
+	   refseq string
+	   start string
+	   end string
+	   strand string
+	   alignedID string
+
+   }
+
+   type transcriptAlign struct {
+	   name string
+	   refseq string
+	   start string
+	   end string
+	   strand string
+	   alignedID string
+
+   }
+
+   // transcript splice regions extraction from the fasta struct
+
+   fOpen := bufio.Newscanner(f)
+   for fOpen.Scan() {
+	   line := fOpen.text()
+	   if strings.Split(line, "\t")[2] == "gene" {
+		   geneAlignT := []geneAlign{}
+		   geneAlignT = append(geneAlign, geneAlign{
+			   name : strings.Split(line, "\t")[0],
+				       refseq : strings.Split(line, "\t")[2],
+				       start : strings.Split(line, "\t")[3],
+				       end : string.Split(line,"\t")[4],
+				       strand : strings.Split(line, "\t")[6],
+				       alignedID : strings.Split(strings.Split(line,"\t")[8], ";")[0]
+		   })
+
+		   if strings.Split(line, "\t")[2] == "exon" {
+			   exonAlignT := []exonAlign{}
+			   exonAlignT = append(exonAlignT,exonAlign{
+				   name : strings.Split(line, "\t")[0],
+					       refseq : strings.Split(line, "\t")[2],
+					       start : string.Split(line, "\t")[3],
+					       end : strings.Split(line, "\t")[4],
+					       strand : strings.Split(line, "\t")[6],
+					       alignedID : strings.Split(strings.Split(line, "\t")[8], ";")[0]
+			   })
+		   }
+		   if strings.Split(line, "\t")[2] == "CDS" {
+			   cdsAlignT := []cdsAlign{}
+			   cdsAlignT = append(cdsAlignT, cdsAlign{
+				   name : strings.Split(line, "\t")[0],
+					      refseq : strings.Split(line, "\t")[2],
+					      start : strings.Split(line, "\t")[3],
+					      end : strings.Split(line, "\t")[4],
+					      strand : strings.Split(line, "\t")[6],
+					      alignedID : strings.Split(strings.Split(line, "\t")[8], ";")[0]
+			   })
+		   }
+		   if strings.Split(line, "\t")[2] == "transcript" {
+			   transcriptAlignT := []transcriptAlign{}
+			   transcriptAlignT = append(transcriptAlignT, transcriptAlign{
+				   name : strings.Split(line, "\t")[0],
+						     refseq : strings.Split(line,"\t")[2],
+						     start : strings,Split(line,"\t")[3],
+						     end : strings.Split(line,"\t")[4],
+						     strand : strings.Split(line,"\t")[6],
+						     alignedID := strings.Split(strings.Split(line, "\t")[8], ";")[0]
+			   })
+		   }
+	   }
+   }
+
+	 geneExtract struct {
+		start string
+		end string
+		seq string
+	}
+
+	exonExtract struct {
+		start string
+		end string
+		seq string
+	}
+	transcriptExtract struct {
+		start string
+		end string
+		seq string
+	}
+	cdsExtract struct {
+		start string
+		end string
+		seq string
+	}
+
+	for i := range geneAlign {
+		for j := range genomeSeq {
+			if genomeID[i] == geneAlign.name[i] {
+		     geneExt = []geneExtract{}
+		     geneExt = append(geneExt, geneExtract{
+			   start : geneAlign.start[i]
+			   end : geneAlign.end[i]
+					seq : genomeSeq[i][int(geneAlign.start[i]):int(geneAlign.end[i])]
+		})
+			}
+		}
+	}
+
+	for i := range transcriptAlign {
+		for j := range genomeSeq {
+			if genomeID[i] == transcriptAlign.name[i] {
+				transcriptExt = []transcriptExtract{}
+				transcriptExt = append(geneExt, geneExtract{
+					start : transcriptAlign.start[i]
+					end : transcriptAlign.end[i]
+					seq : genomeSeq[i][int(transcriptAlign.start[i]):int(transcriptAlign.end[i])]
+				})
+			}
+		}
+	}
+
+	for i := range cdsAlign {
+		for j := range genomeSeq {
+			if genomeID[i] == cdsAlign.name[i] {
+				cdsExt = []cdsExtract{}
+				cdsExt = append(cdsExt, cdsExtract{
+					start : cdsAlign.start[i]
+					end : cdsAlign.end[i]
+					seq : genomeSeq[i][int(cdsAlign.start[i]):int(cdsAlign.end[i])]
+				})
+			}
+		}
+	}
+
+	for i := range exonAlign {
+		for j := range genomeSeq {
+			if genomeID[i] == exonAlign.name[i] {
+				exonExt = []exonExtract{}
+				exonExt = append(exonExt, exonExtract{
+					start : exonAlign.start[i]
+					end : exonAlign.end[i]
+					seq : genomeSeq[i][int(exonAlign.start[i]):int(exonAlign.end[i])]
+				})
+			}
+		}
+	}
 }
-
 }
