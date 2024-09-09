@@ -68,6 +68,7 @@ type trancript struct {
 			start : strings.Split(line, "\t")[3],
 			end : strings.Split(line, "\t")[4]
 		})
+		}
 		if string(strings.Split(line, "\t")[2]) == "transcript" {
 				transcriptOpen = []transcript{}
         transcriptOpen = append(transcriptOpen,transcript{
@@ -344,7 +345,6 @@ type trancript struct {
 
 
  // merging of several gff aligned across multiple parent genomes
-
     type annoMergeExon struct {
 			name string
 			refseq string
@@ -508,7 +508,7 @@ type trancript struct {
 			}
 }
 
-		// binning of the junctions for the plots.
+// binning of the junctions for the plots.
 
 		 exonBin100 := []int32{}
 		 exonBin500 := []int32{}
@@ -522,7 +522,7 @@ type trancript struct {
 
 		transcriptBin100 := []int32{}
 		transcriptBin500 := []int32{}
-    transcriptBin1000 := []int32{}
+                transcriptBin1000 := []int32{}
 		transcriptBin1500 := []int32{}
 		trancriptBin2000 := []int32{}
 		transcriptBin2500 := []int32{}
@@ -552,7 +552,7 @@ type trancript struct {
 
 		for i := range exonAlignlength {
 			if exonAlignnLenth[i] <=100 {
-				exonBin100 = append(exonBin100, exonAligLength[i])
+				exonBin100 = append(exonBin100, exonAlignLength[i])
 			}
 			elseif exonAlignLength[i] >= 100 && exonAlignLength <=500 {
 				exonBin500 = append(exonBin500, exonAligLength[i])
@@ -567,7 +567,7 @@ type trancript struct {
 				exonBin2000 = append(exonBin2000, exonAlignLength[i])
 			}
 			elseif exonAlignLength[i] >= 2000 && exonAlignLength[i] <=2500 {
-         exonBin2500 = append(exonBin2500, exonAlignlength[i])
+                                exonBin2500 = append(exonBin2500, exonAlignlength[i])
 			}
 			elseif exonAlignlength[i] >= 2500 && exonAlignLength[i] <= 3000 {
 				exonBin3000 = append(exonBin3000, exonAlignlength[i])
@@ -583,7 +583,105 @@ type trancript struct {
 			}
  		}
 
+ 		for i := range transcriptAlignlength {
+			if transcriptAlignnLenth[i] <=100 {
+				transcriptBin100 = append(transcriptBin100, transcriptAlignLength[i])
+			}
+			elseif transcriptAlignLength[i] >= 100 && transcriptAlignLength <=500 {
+				transcriptBin500 = append(transcriptBin500, transcriptAligLength[i])
+			}
+			elseif transcriptAligLength[i] >= 500 && transcriptAlignLength[i] <=1000 {
+				transcriptBin1000 = append(transcriptBin1000, transcriptAlignLength[i])
+			}
+			elseif transcriptAlignlength[i] >= 1000 && transcriptAlignLength[i] <= 1500 {
+				transcriptBin1500 = append(transcriptBin1500, transcriptAlignLength[i])
+			}
+			elseif transcriptAlignLength[i] >= 1500 && transcriptAlignLength[i] <= 2000 {
+				transcriptBin2000 = append(transcriptBin2000, transcirptAlignLength[i])
+			}
+			elseif transcriptAlignLength[i] >= 2000 && transcriptAlignLength[i] <=2500 {
+				transcriptBin2500 = append(transcriptBin2500, transcriptAlignlength[i])
+			}
+			elseif transcriptAlignlength[i] >= 2500 && transcriptAlignLength[i] <= 3000 {
+				transcriptBin3000 = append(transcriptBin3000, transcriptAlignlength[i])
+			}
+			elseif transcriptAlignlength[i] >= 3000 && transcriptAlignlength[i] <= 3500 {
+				transcriptBin35000 = append(transcriptBin3500, transcriptAlignLength[i])
+			}
+		elseif transcriptAlignLength[i] >= 3500 && transcriptAlignLength[i] <= 4000 {
+				transcriptBin4000 = append(transcriptBin4000, transcriptAlignLength[i])
+			}
+			elseif {
+				continue
+			}
+		}
 
+		for i := range geneAlignlength {
+			if geneAlignnLenth[i] <=100 {
+				geneBin100 = append(geneBin100, geneAligLength[i])
+			}
+			elseif geneAlignLength[i] >= 100 && geneAlignLength <=500 {
+				geneBin500 = append(geneBin500, geneAligLength[i])
+			}
+			elseif geneAligLength[i] >= 500 && geneAlignLength[i] <=1000 {
+				geneBin1000 = append(geneBin1000, geneAlignLength[i])
+			}
+			elseif geneAlignlength[i] >= 1000 && geneAlignLength[i] <= 1500 {
+				geneBin1500 = append(geneBin1500, geneAlignLength[i])
+			}
+			elseif geneAlignLength[i] >= 1500 && geneAlignLength[i] <= 2000 {
+				geneBin2000 = append(geneBin2000, geneAlignLength[i])
+			}
+			elseif geneAlignLength[i] >= 2000 && geneAlignLength[i] <=2500 {
+				geneBin2500 = append(geneBin2500, geneAlignlength[i])
+			}
+			elseif geneAlignlength[i] >= 2500 && geneAlignLength[i] <= 3000 {
+				geneBin3000 = append(geneBin3000, geneAlignlength[i])
+			}
+			elseif geneAlignlength[i] >= 3000 && geneAlignlength[i] <= 3500 {
+				geneBin35000 = append(geneBin3500, geneAlignLength[i])
+			}
+			elseif geneAlignLength[i] >= 3500 && geneAlignLength[i] <= 4000 {
+				geneBin4000 = append(geneBin4000, geneAlignLength[i])
+			}
+			elseif {
+				continue
+			}
+		}
+
+		for i := range cdsAlignlength {
+			if cdsAlignnLenth[i] <=100 {
+				cdsBin100 = append(cdsBin100, cdsAligLength[i])
+			}
+			elseif cdsAlignLength[i] >= 100 && cdsAlignLength <=500 {
+				cdsBin500 = append(cdsBin500, cdsAligLength[i])
+			}
+			elseif cdsAligLength[i] >= 500 && cdsAlignLength[i] <=1000 {
+				cdsBin1000 = append(cdsBin1000, cdsAlignLength[i])
+			}
+			elseif cdsAlignlength[i] >= 1000 && cdsAlignLength[i] <= 1500 {
+				cdsBin1500 = append(cdsBin1500, cdsAlignLength[i])
+			}
+			elseif cdsAlignLength[i] >= 1500 && cdsAlignLength[i] <= 2000 {
+				cdsBin2000 = append(cdsBin2000, cdsAlignLength[i])
+			}
+			elseif cdsAlignLength[i] >= 2000 && cdsAlignLength[i] <=2500 {
+				cdsBin2500 = append(cdsBin2500, cdsAlignlength[i])
+			}
+			elseif cdsAlignlength[i] >= 2500 && cdsAlignLength[i] <= 3000 {
+				cdsBin3000 = append(cdsBin3000, cdsAlignlength[i])
+			}
+			elseif cdsAlignlength[i] >= 3000 && cdsAlignlength[i] <= 3500 {
+				cdsBin35000 = append(cdsBin3500, cdsAlignLength[i])
+			}
+			elseif cdsAlignLength[i] >= 3500 && cdsAlignLength[i] <= 4000 {
+				cdsBin4000 = append(cdsBin4000, cdsAlignLength[i])
+			}
+			elseif {
+				continue
+			}
+		}
+ // extract fasta and annotations
 
 }
 
